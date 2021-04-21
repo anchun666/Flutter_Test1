@@ -5,6 +5,9 @@ import 'package:flutter_test1/Model/News.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_test1/home/news_detail.dart';
 import 'package:flutter_test1/login/login_page.dart';
+import 'package:flutter_test1/login/login_provider.dart';
+import 'package:provider/provider.dart';
+import 'news_detail.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -19,15 +22,28 @@ class _HomeState extends State<Home> {
   News news;
   int newsLength = 0;
 
-  //創建Method(取Banner資料)
-  void queryBanner() {
-    //.then就是Future的用法之一
-    //value就是Api.dart裡對應方法中的回傳值(response.date)
-    Api.queryBanner().then((value) {
-      banners = Banners.fromJson(value);
-      bannersLength = banners.data.result.length;
-    });
-  }
+  // 創建 Method (取得 Banner 資料)
+  // void queryBanner() {
+  //   // .then 就是 Future 的用法之一
+  //   // value 就是 Api.dart 裡對應方法中的回傳值(response.data)
+  //   Api.queryBanner().then((value) {
+  //     setState(() {
+  //
+  //
+  //     });
+  //   });
+  // }
+
+  // 創建 Method (取得 News 資料)
+  // void queryNews() {
+  //   //.then 就是 Future 的用法之一
+  //   // value 就是 Api.dart 裡對應方法中的回傳值(response.data)
+  //   Api.queryNews().then((value) {
+  //     setState(() {
+  //
+  //     });
+  //   });
+  // }
 
   void queryNews() {
     Api.queryNews().then((value) {
@@ -40,26 +56,43 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    queryBanner();
-    queryNews();
+    //queryBanner();
+    //queryNews();
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final login = Provider.of<LoginProvider>(context);
+    print(login.state);
+    // final width = MediaQuery
+    //     .of(context)
+    //     .size
+    //     .width;
     return Scaffold(
+      //最頂部title
         appBar: AppBar(
           title: Text('首頁'),actions: <Widget>[
             ElevatedButton(
+              child:Text(
+            (()
+            {
+              if(login.state==1){
+                return '登出';
+            }
+              return '登入';
+            }()),
+             style:TextStyle(fontSize: 20),
+        ),
+              style:ElevatedButton.styleFrom(shadowColor: Colors.black87),
               onPressed:(){
-                Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage()));
+                if(login.state == 1){
+                  login.loginState(false);
+                }
+                Navigator.pushNamed(context, "/l");
               },
-              child: Text('登入',style: TextStyle(fontSize: 20),
+
               ),
-            )
+
         ],
         ),
 
@@ -112,12 +145,12 @@ class _HomeState extends State<Home> {
                             },
                             duration: 1000,
                             itemCount: bannersLength,
-                            itemWidth: width,
+                            itemWidth: 300,
                             itemHeight: 300,
                             layout: SwiperLayout.STACK,
                             autoplay: true,
-                            pagination: SwiperPagination(),
-                            control: SwiperControl(),
+                            pagination: new SwiperPagination(),
+                            control: new SwiperControl(),
                           ),
                         ),
 

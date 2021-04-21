@@ -31,26 +31,20 @@ class Api {
     }
   }
 
-  // act:0928075503 pw:123456789
-  // Dio().post(url, data:{內容}) 如果api裡沒有資料，要使用此方法新增資料
-  static Future queryAccount() async{
+  static Future queryAccount(account, password) async{
     Response response;
-    response = await Dio().post('$loginUrl',data:
-      {
-          "rs": 0,
-          "rsmessage": "成功",
-          "centercode": "jx01",
-          "levelname": "",
-          "eweektimes": 0,
-          "memptype": 0
-      }
+    // await 此方法須非同步(async)，所以會在 Method 中加入 async
 
-
-    );
-    if(response.statusCode == HttpStatus.ok) {
+    // act:0928075503 pw:123456789
+    // Dio().post(url, data:{內容}) 如果api裡沒有資料，要使用此方法新增資料
+    response = await Dio().post('$loginUrl', data:{
+      "authcode": "@#ALLEC#@%\$!",
+      "centercode": "jx01",
+      "memtel": "$account",
+      "pw": "$password",
+    });
+    if(response.statusCode == HttpStatus.ok){
       return response.data;
     }
   }
-
-
 }

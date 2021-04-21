@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test1/home/Home.dart';
 import 'package:flutter_test1/courseinfo/Courseinfo.dart';
 import 'package:flutter_test1/member/Member.dart';
-
+import 'package:provider/provider.dart';
 import 'login/login_page.dart';
+import 'login/login_provider.dart';
 
 
 
 void main() {
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => LoginProvider(),
+    child: MyApp(),
+  ));
 }
 //StatelessWidget用於單純顯示資料使用
 class MyApp extends StatelessWidget {
@@ -27,8 +31,8 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
+        primarySwatch: Colors.blue,),
+        debugShowCheckedModeBanner: false, //去除上方debug
       home: MyHomePage(title: 'Flutter Demo Home Page'),
 
       //Navigator.pushNamed使用前的預先設定
@@ -69,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Home(),
     CourseInfo(),
     Member(),
-    LoginPage(),
+    //LoginPage(),
   ];
   /*static const List<Widget>  _widgetOptions = <Widget>[
     Text(

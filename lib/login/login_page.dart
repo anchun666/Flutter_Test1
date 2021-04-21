@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test1/home/Home.dart';
 import 'package:flutter_test1/main.dart';
 import 'package:flutter_test1/Api/Api.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_test1/login/login_provider.dart';
+import 'package:flutter_test1/Model/Account.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,88 +13,141 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  var accountCtor = TextEditingController();
-  var pwdCtor = TextEditingController();
+
+  var accountController = TextEditingController();
+  var pwdController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Colors.white,
-      appBar: AppBar(
-        title: Text('登入'),
-
-    ),
-
-
-
-
-         floatingActionButton: FloatingActionButton(
-         onPressed:(){
-
-
-
-         },
-         tooltip: 'Increment',
-           child: Icon(Icons.add),
-
+        appBar: AppBar(
+          title: Text("登入"),
         ),
-      body: SingleChildScrollView(
-        child:Column(
-          children: <Widget>[
-            Center(
-              child:Image.asset('assets/images/0420.png'),
-            ),
-            Padding(
-              padding:EdgeInsets.symmetric(horizontal: 8,vertical: 16),
-              child:TextField(
-                controller:accountCtor,
-                decoration:InputDecoration(
-                hintText:'請輸入帳號',
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Center(
+                child: Image.asset('assets/images/unnamed.jpg'),
               ),
-              )
-            ),
-            Padding(
-                padding:EdgeInsets.symmetric(horizontal: 8,vertical: 16),
-                child:TextField(
-                  controller:pwdCtor,
-                  decoration:InputDecoration(
-                    hintText:'請輸入密碼',
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: TextField(
+                  controller: accountController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: '請輸入帳號',
                   ),
-                )
-            ),
-            Container(
-              width:MediaQuery.of(context).size.width,
-              child:Padding(
-                padding:const EdgeInsets.all(16.0),
-                child:ElevatedButton(
-                  child:Text('登入',style:TextStyle(fontSize: 20),),
-                  onPressed:() {
-                    if (accountCtor.text == '0928075503') {
-                      print('帳號:${accountCtor.text}');
-                      if (pwdCtor.text == '123456789') {
-                        print('密碼:${pwdCtor.text}');
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => MyHomePage()));
-                      }
-
-                  }
-
-
-
-
-                  },
+                ),
               ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: TextField(
+                  controller: pwdController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: '請輸入密碼',
+                  ),
+                ),
               ),
-            ),
-            Center(
-              child:Image.asset('assets/images/0420.png'),
-            ),
-            Center(
-              child:Image.asset('assets/images/0420.png'),
-            ),
-          ],
+              Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child:
+                  ElevatedButton(
+                    child: Text(
+                      '登入',
+                      style: TextStyle(fontSize: 20),
+                    ),
+
+                    // 點擊登入按鈕後才會連接API並確認帳號密碼是否錯誤
+                    onPressed: () {
+                      // Api.queryAccount(AccountController.text, pwdController.text).then((value) => print(value));
+                      Api.queryAccount(
+                          accountController.text, pwdController.text)
+                          .then((value) {
+                        var data = Account.fromJson((value));
+                        // rs == 0 代表通過
+                        // rs == 4 代表失敗
+                        if (data.rs == 0) {
+                          Provider.of<LoginProvider>(context, listen: false).loginState(true);
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                Future.delayed(Duration(seconds: 1), () {
+                                  // 回到 Home 頁面
+                                  // pushNamedAndRemoveUntil 會將前面頁面移除
+                                  Navigator.pushNamedAndRemoveUntil(context, "/home", (_) => false);
+                                });
+                                return AlertDialog(
+                                    backgroundColor: Colors.grey[800],
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15))
+                                    ),
+                                    content: Container(
+                                      height: 25,
+                                      width: 80,
+                                      child: Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child:
+                                          Text("登入成功", style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white),)
+                                      ),
+                                    )
+                                );
+                              }
+                          );
+                        }
+
+                        else {
+                          Provider.of<LoginProvider>(context, listen: false).loginState(false);
+                          // 跳錯誤訊息
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                Future.delayed(Duration(seconds: 1), () {
+                                  Navigator.pop(context);
+                                });
+                                return AlertDialog(
+                                  backgroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15))
+                                  ),
+                                  content: Column(
+                                    // 對齊方式
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .center,
+                                    // (看當下是用Column 或 Row) MainAxisSize.min 盡可能縮減高或寬度等於子組件
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Icon(Icons.announcement_outlined,
+                                        color: Colors.white, size: 30,),
+                                      Padding(padding: EdgeInsets.only(
+                                          right: 20),),
+                                      Text("帳號密碼錯誤", style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white),),
+                                    ],
+                                  ),
+                                );
+                              }
+                          );
+                        }
+                      });
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
         )
-      )
     );
-
   }
 }
