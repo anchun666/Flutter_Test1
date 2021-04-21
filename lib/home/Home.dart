@@ -4,7 +4,7 @@ import 'package:flutter_test1/Model/Banners.dart';
 import 'package:flutter_test1/Model/News.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_test1/home/news_detail.dart';
-import 'package:flutter_test1/login/login_page.dart';
+
 import 'package:flutter_test1/login/login_provider.dart';
 import 'package:provider/provider.dart';
 import 'news_detail.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_test1/home/Home.dart';
 import 'package:flutter_test1/courseinfo/Courseinfo.dart';
 import 'package:flutter_test1/member/Member.dart';
 import 'package:provider/provider.dart';
-import 'login/login_page.dart';
+import 'package:flutter_test1/login/login_page.dart';
 import 'login/login_provider.dart';
 
 

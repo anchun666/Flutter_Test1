@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test1/home/Home.dart';
-import 'package:flutter_test1/main.dart';
 import 'package:flutter_test1/Api/Api.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_test1/login/login_provider.dart';
@@ -28,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Center(
-                child: Image.asset('assets/images/unnamed.jpg'),
+                child: Image.asset('assets/images/0420.png'),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
